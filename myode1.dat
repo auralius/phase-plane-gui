@@ -1,4 +1,4 @@
-data
+ode2ndorder
 y
 0.01*y^3-x
 -10

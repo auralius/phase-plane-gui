@@ -1,35 +1,35 @@
-function varargout = pplane(varargin)
-% PPLANE MATLAB code for pplane.fig
-%      PPLANE, by itself, creates a new PPLANE or raises the existing
+function varargout = pplane1(varargin)
+% PPLANE1 MATLAB code for pplane1.fig
+%      PPLANE1, by itself, creates a new PPLANE1 or raises the existing
 %      singleton*.
 %
-%      H = PPLANE returns the handle to a new PPLANE or the handle to
+%      H = PPLANE1 returns the handle to a new PPLANE1 or the handle to
 %      the existing singleton*.
 %
-%      PPLANE('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in PPLANE.M with the given input arguments.
+%      PPLANE1('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in PPLANE1.M with the given input arguments.
 %
-%      PPLANE('Property','Value',...) creates a new PPLANE or raises the
+%      PPLANE1('Property','Value',...) creates a new PPLANE1 or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before pplane_OpeningFcn gets called.  An
+%      applied to the GUI before pplane1_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to pplane_OpeningFcn via varargin.
+%      stop.  All inputs are passed to pplane1_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help pplane
+% Edit the above text to modify the response to help pplane1
 
-% Last Modified by GUIDE v2.5 23-Mar-2017 09:13:29
+% Last Modified by GUIDE v2.5 31-Mar-2017 14:46:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @pplane_OpeningFcn, ...
-                   'gui_OutputFcn',  @pplane_OutputFcn, ...
+                   'gui_OpeningFcn', @pplane1_OpeningFcn, ...
+                   'gui_OutputFcn',  @pplane1_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,26 +44,26 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before pplane is made visible.
-function pplane_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before pplane1 is made visible.
+function pplane1_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to pplane (see VARARGIN)
+% varargin   command line arguments to pplane1 (see VARARGIN)
 
-% Choose default command line output for pplane
+% Choose default command line output for pplane1
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes pplane wait for user response (see UIRESUME)
+% UIWAIT makes pplane1 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = pplane_OutputFcn(hObject, eventdata, handles) 
+function varargout = pplane1_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -217,26 +217,17 @@ function btn_graph_phase_plane_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global equ_xdot;
-global equ_ydot;
 
-equ_xdot_=get(handles.txt_xdot, 'String');
-equ_ydot_=get(handles.txt_ydot, 'String');
-
-equ_xdot = strrep(equ_xdot_, 'x', 'x(1)');
-equ_xdot = strrep(equ_xdot, 'y', 'x(2)');
-equ_ydot = strrep(equ_ydot_, 'x', 'x(1)');
-equ_ydot = strrep(equ_ydot, 'y', 'x(2)');
+equ_xdot = get(handles.txt_xdot, 'String');
 
 xmin = str2double(get(handles.txt_minx, 'String'));
 xmax = str2double(get(handles.txt_maxx, 'String'));
-ymin = str2double(get(handles.txt_miny, 'String'));
-ymax = str2double(get(handles.txt_maxy, 'String'));
 simtime = str2double(get(handles.txt_simtime, 'String'));
 resolution = [str2double(get(handles.txt_resolutionh, 'String')) ...
     str2double(get(handles.txt_resolutionv, 'String'))];
-phase_plot_2_interactive(@f, [xmin xmax; ymin ymax], simtime, ...
-    {strcat('$\dot{x}=', equ_xdot_, '$') strcat('$\dot{y}=', equ_ydot_, '$')}, ...
-    resolution);
+phase_plot_1_interactive(@f, [xmin xmax], simtime, ...
+    strcat('$\dot{x}=', equ_xdot, '$'), ...
+    resolution, 0.4);
 
 
 function txt_simtime_Callback(hObject, eventdata, handles)
@@ -265,10 +256,8 @@ end
 % --- Callback function of the ODE
 function xdot = f(t, x)
 global equ_xdot;
-global equ_ydot;
 
-xdot(1,1) = eval(equ_xdot);
-xdot(2,1) = eval(equ_ydot);
+xdot = eval(equ_xdot);
 
 
 
@@ -335,14 +324,11 @@ if file ~= 0
     T = readtable(strcat(path, file));
     data = table2cell(T);
     set(handles.txt_xdot, 'String', data{1, :});
-    set(handles.txt_ydot, 'String', data{2, :});
-    set(handles.txt_minx, 'String', data{3, :});
-    set(handles.txt_maxx, 'String', data{4, :});
-    set(handles.txt_miny, 'String', data{5, :});
-    set(handles.txt_maxy, 'String', data{6, :});
-    set(handles.txt_simtime, 'String', data{7, :}); 
-    set(handles.txt_resolutionh, 'String', data{8, :})
-    set(handles.txt_resolutionv, 'String', data{9, :});
+    set(handles.txt_minx, 'String', data{2, :});
+    set(handles.txt_maxx, 'String', data{3, :});
+    set(handles.txt_simtime, 'String', data{4, :}); 
+    set(handles.txt_resolutionh, 'String', data{5, :})
+    set(handles.txt_resolutionv, 'String', data{6, :});
 end
 
 
@@ -351,19 +337,16 @@ function mnu_save_Callback(hObject, eventdata, handles)
 % hObject    handle to mnu_save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-data = {get(handles.txt_xdot, 'String'); ...
-    get(handles.txt_ydot, 'String'); ...
+ode1storder = {get(handles.txt_xdot, 'String'); ...
     get(handles.txt_minx, 'String'); ...
     get(handles.txt_maxx, 'String'); ...
-    get(handles.txt_miny, 'String'); ...
-    get(handles.txt_maxy, 'String'); ...
     get(handles.txt_simtime, 'String'); ...
     get(handles.txt_resolutionh, 'String');...
     get(handles.txt_resolutionv, 'String')};
 
 [file, path] = uiputfile('myode.dat', 'Save file name');
 if file ~= 0
-    T = cell2table(data);
+    T = cell2table(ode1storder);
     writetable(T, strcat(path, file));
 end
 
